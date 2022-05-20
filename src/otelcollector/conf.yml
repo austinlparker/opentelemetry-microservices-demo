@@ -4,6 +4,8 @@ receivers:
       grpc:
       http:
   docker_stats:
+    container_labels_to_metric_labels:
+      service.name: service.name
 
 exporters:
   jaeger:

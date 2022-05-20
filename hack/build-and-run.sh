@@ -84,16 +84,16 @@ docker run -d --rm --network="$networkName" \
     --name "$containername" redis:alpine || true
 
 containername=adservice
-run "-p 9555 -e PORT=9555 \
+run "-l service.name=$containername -p 9555 -e PORT=9555 \
      " "$containername"
 
 containername=cartservice
-run "-p 7070 -e REDIS_ADDR=redis-cart:6379 \
+run "-l service.name=$containername -p 7070 -e REDIS_ADDR=redis-cart:6379 \
      -e OTEL_EXPORTER_OTLP_ENDPOINT=$otelCollector \
      " "$containername"
 
 containername=checkoutservice
-run "-p 5050 -e PORT=5050 \
+run "-l service.name=$containername  -p 5050 -e PORT=5050 \
      -e PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:3550 \
      -e SHIPPING_SERVICE_ADDR=shippingservice:50051 \
      -e PAYMENT_SERVICE_ADDR=paymentservice:50051 \
@@ -102,16 +102,16 @@ run "-p 5050 -e PORT=5050 \
      -e CART_SERVICE_ADDR=cartservice:7070" "$containername"
 
 containername=currencyservice
-run "-p 7000 -e PORT=7000 \
+run "-l service.name=$containername -p 7000 -e PORT=7000 \
      " "$containername"
 
 containername=emailservice
-run "-p 8080 -e PORT=8080 \
+run "-l service.name=$containername -p 8080 -e PORT=8080 \
      -e OTEL_PYTHON_LOG_CORRELATION=true \
      " "$containername"
 
 containername=frontend
-run "-p 8080:8080 -e PORT=8080 \
+run "-l service.name=$containername -p 8080:8080 -e PORT=8080 \
      -e PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:3550 \
      -e SHIPPING_SERVICE_ADDR=shippingservice:50051 \
      -e CURRENCY_SERVICE_ADDR=currencyservice:7000 \
@@ -121,23 +121,23 @@ run "-p 8080:8080 -e PORT=8080 \
      -e AD_SERVICE_ADDR=adservice:9555" "$containername"
 
 containername=paymentservice
-run "-p 50051 -e PORT=50051 \
+run "-l service.name=$containername -p 50051 -e PORT=50051 \
      " "$containername"
 
 containername=productcatalogservice
-run "-p 3550 -e PORT=3550 \
+run "-l service.name=$containername -p 3550 -e PORT=3550 \
      " "$containername"
 
 containername=recommendationservice
-run "-p 8080 -e PORT=8080 \
+run "-l service.name=$containername -p 8080 -e PORT=8080 \
      -e OTEL_PYTHON_LOG_CORRELATION=true \
      -e PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:3550 \
      " "$containername"
 
 containername=shippingservice
-run "-p 50051 -e PORT=50051 \
+run "-l service.name=$containername -p 50051 -e PORT=50051 \
      " "$containername"
 
 containername=loadgenerator
-run "-e FRONTEND_ADDR=frontend:8080 \
+run "-l service.name=$containername -e FRONTEND_ADDR=frontend:8080 \
      -e USERS=10" "$containername"
