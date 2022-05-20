@@ -3,18 +3,27 @@ receivers:
     protocols:
       grpc:
       http:
+  docker_stats:
 
 exporters:
   jaeger:
     endpoint: "jaeger:14250"
     tls:
       insecure: true
+  otlp:
+    endpoint: "ingest.lightstep.com:443"
+    headers: {"lightstep-access-token":"TOKEN"}
   logging:
-    loglevel: debug
+    loglevel: error
 
 service:
   pipelines:
     traces:
       receivers: [otlp]
       processors: []
-      exporters: [logging,jaeger]
+      exporters: [logging,jaeger,otlp]
+    metrics:
+      receivers: [otlp, docker_stats]
+      processors: []
+      exporters: [logging, otlp]
+
