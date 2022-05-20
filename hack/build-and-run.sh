@@ -71,7 +71,7 @@ docker run -d --rm --network="$networkName" --name jaeger \
   jaegertracing/all-in-one:1.31 || true
 
 containername="$otelCollectorName"
-docker run -d --rm --network="$networkName" \
+docker run -d -v /var/run/docker.sock:/var/run/docker.sock --rm --network="$networkName" \
      --name "$otelCollectorName" \
      "$otelCollectorName:$TAG" >&2 || true
 
